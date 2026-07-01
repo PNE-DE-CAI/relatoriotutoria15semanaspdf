@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório tutoria 2026 — URE CAIEIRAS - Seduc SP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 12mm 14mm 16mm 14mm;
+  }
+
+  @media print {
+    html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .avoid-break { page-break-inside: avoid; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #1e293b;
+    font-size: 9pt;
+    line-height: 1.4;
+  }
+
+  /* ===== HEADER BAR ===== */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0a2f6c;
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin-bottom: 14px;
+  }
+
+  .top-bar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .top-bar .logo-area img {
+    height: 36px;
+    background: white;
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .top-bar .logo-text {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #ffec9e;
+  }
+
+  .top-bar .logo-sub {
+    font-size: 6.5pt;
+    color: rgba(255,236,158,0.55);
+    font-weight: 500;
+  }
+
+  .top-bar .title-badge {
+    background: #d32f2f;
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    font-size: 7.5pt;
+  }
+
+  /* ===== PAGE TITLE ===== */
+  .page-header {
+    text-align: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #0a2f6c;
+  }
+
+  .page-header h1 {
+    font-size: 15pt;
+    font-weight: 800;
+    color: #0a2f6c;
+  }
+
+  .page-header .sub {
+    font-size: 8pt;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  .page-header .badge {
+    display: inline-block;
+    margin-top: 4px;
+    background: #fee2e2;
+    color: #d32f2f;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 7pt;
+    border: 1px solid #fca5a5;
+  }
+
+  /* ===== SUMMARY ROW ===== */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .sum-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .sum-card .s-label {
+    font-size: 6pt;
+    font-weight: 700;
+    color: #0a2f6c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sum-card .s-value {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    line-height: 1.2;
+  }
+
+  .sum-card .s-detail {
+    font-size: 6pt;
+    color: #94a3b8;
+  }
+
+  /* ===== CHARTS ROW ===== */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .chart-panel {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+
+  .chart-panel h3 {
+    font-size: 9pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3px solid #d32f2f;
+  }
+
+  .chart-panel canvas {
+    width: 100% !important;
+    max-height: 200px;
+  }
+
+  /* ===== HEATMAP ===== */
+  .heatmap-section {
+    margin-bottom: 14px;
+  }
+
+  .heatmap-section h2 {
+    font-size: 10pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 3px solid #d32f2f;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 6px;
+    padding-left: 11px;
+  }
+
+  .legend-row span {
+    font-size: 6.5pt;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .legend-row .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .dot-g { background: #dcfce7; border: 1px solid #86efac; }
+  .dot-y { background: #fef3c7; border: 1px solid #fcd34d; }
+  .dot-r { background: #fee2e2; border: 1px solid #fca5a5; }
+
+  .heatmap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 5.8pt;
+    table-layout: fixed;
+  }
+
+  .heatmap-table th {
+    background: #f1f5f9;
+    color: #0a2f6c;
+    font-weight: 700;
+    padding: 3px 2px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    font-size: 5.5pt;
+  }
+
+  .heatmap-table th:first-child {
+    text-align: left;
+    width: 130px;
+    padding-left: 6px;
+    font-size: 6pt;
+  }
+
+  .heatmap-table td {
+    text-align: center;
+    padding: 2px 1px;
+    border: 1px solid #e2e8f0;
+    font-weight: 700;
+    font-size: 5.8pt;
+  }
+
+  .heatmap-table td:first-child {
+    text-align: left;
+    padding-left: 6px;
+    font-weight: 600;
+    color: #1e293b;
+    background: #f8fafc;
+    font-size: 6pt;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .heatmap-table tr:nth-child(even) td:first-child {
+    background: #f1f5f9;
+  }
+
+  .hm-g { background: #dcfce7; color: #16a34a; }
+  .hm-y { background: #fef3c7; color: #b45309; }
+  .hm-r { background: #fee2e2; color: #d32f2f; }
+  .hm-x { background: #f8fafc; color: #94a3b8; }
+
+  /* ===== RANKING TABLE ===== */
+  .ranking-section {
+    margin-bottom: 14px;
+  }
+
+  .ranking-section h2 {
+    font-size: 10pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 3px solid #d32f2f;
+  }
+
+  .ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7pt;
+    table-layout: fixed;
+  }
+
+  .ranking-table th {
+    background: #0a2f6c;
+    color: #ffec9e;
+    font-weight: 700;
+    padding: 5px 6px;
+    text-align: left;
+    font-size: 6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .ranking-table th:nth-child(1) { width: 28px; }
+  .ranking-table th:nth-child(2) { width: auto; }
+  .ranking-table th:nth-child(3) { width: 36px; }
+  .ranking-table th:nth-child(4) { width: 38px; }
+  .ranking-table th:nth-child(5) { width: 90px; }
+  .ranking-table th:nth-child(6) { width: 52px; }
+  .ranking-table th:nth-child(7) { width: 58px; }
+  .ranking-table th:nth-child(8) { width: 56px; }
+
+  .ranking-table td {
+    padding: 3.5px 6px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .ranking-table tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .ranking-table .rk { color: #94a3b8; font-weight: 600; text-align: center; font-size: 6.5pt; }
+  .ranking-table .nm { font-weight: 600; color: #0a2f6c; font-size: 7pt; }
+  .ranking-table .ct { text-align: center; }
+  .ranking-table .pct-cell { display: flex; align-items: center; gap: 4px; }
+
+  .pct-mini-bar {
+    display: inline-block;
+    height: 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .sdot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 2px;
+    vertical-align: middle;
+  }
+  .sd-g { background: #16a34a; }
+  .sd-r { background: #d32f2f; }
+
+  /* ===== ANALYSIS SECTION ===== */
+  .analysis-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .analysis-panel {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    background: #fff;
+  }
+
+  .analysis-panel h3 {
+    font-size: 8.5pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 3px solid #d32f2f;
+  }
+
+  .analysis-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7pt;
+  }
+
+  .analysis-panel table td {
+    padding: 2.5px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .analysis-panel table td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: #0a2f6c;
+    font-size: 7pt;
+  }
+
+  .analysis-panel table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* ===== FULL DATA TABLE ===== */
+  .full-section h2 {
+    font-size: 10pt;
+    font-weight: 800;
+    color: #0a2f6c;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 3px solid #d32f2f;
+  }
+
+  .full-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 5.8pt;
+    table-layout: fixed;
+  }
+
+  .full-table th {
+    background: #0a2f6c;
+    color: #ffec9e;
+    font-weight: 700;
+    padding: 4px 3px;
+    text-align: center;
+    font-size: 5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .full-table th:first-child {
+    text-align: left;
+    width: 120px;
+    padding-left: 6px;
+    font-size: 5.5pt;
+  }
+
+  .full-table th:nth-child(2),
+  .full-table th:nth-child(3) {
+    width: 30px;
+  }
+
+  .full-table td {
+    padding: 2.5px 2px;
+    text-align: center;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 5.8pt;
+  }
+
+  .full-table td:first-child {
+    text-align: left;
+    padding-left: 6px;
+    font-weight: 600;
+    color: #0a2f6c;
+    font-size: 6pt;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .full-table tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .fv { color: #16a34a; font-weight: 700; }
+  .fa { color: #b45309; font-weight: 700; }
+  .fr { color: #d32f2f; font-weight: 700; }
+
+  /* ===== FOOTER ===== */
+  .print-footer {
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 6pt;
+    color: #94a3b8;
+  }
+
+  /* ===== PRINT BUTTON (screen only) ===== */
+  .print-btn-wrap {
+    text-align: center;
+    padding: 30px 0;
+  }
+
+  .print-btn {
+    background: #0a2f6c;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    padding: 14px 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(10,47,108,0.3);
+    transition: all 0.2s;
+  }
+
+  .print-btn:hover { background: #d32f2f; }
+
+  .print-btn svg { vertical-align: middle; margin-right: 8px; }
+
+  .print-instructions {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 10px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  @media print {
+    .print-btn-wrap { display: none; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PRINT BUTTON (screen only) -->
+<div class="print-btn-wrap no-print">
+  <button class="print-btn" onclick="window.print()">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Gerar PDF / Imprimir
+  </button>
+  <p class="print-instructions">Dica: ao imprimir, selecione <strong>"Salvar como PDF"</strong> como destino e orientação <strong>Paisagem</strong>.</p>
+</div>
+
+<!-- ===== PÁGINA 1: CAPÍTULO + RESUMO + GRÁFICOS ===== -->
+<div id="page1">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo 3D Education / SEDUC SP">
+      <div>
+        <div class="logo-text">URE CAIEIRAS — Seduc SP</div>
+        <div class="logo-sub">Tutoria 1° semestre · Acompanhamento de Reforço</div>
+      </div>
+    </div>
+    <div class="title-badge">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="page-header">
+    <h1>Acompanhamento de Aulas de Tutoria</h1>
+    <div class="sub">Monitoramento semanal de engajamento e participação dos alunos</div>
+    <div class="badge">Março a Junho de 2026 — 15 semanas</div>
+  </div>
+
+  <div class="summary-row" id="sumCards"></div>
+
+  <div class="charts-row">
+    <div class="chart-panel">
+      <h3>Evolução da Média de Alunos Ativos</h3>
+      <canvas id="trendChart" height="200"></canvas>
+    </div>
+    <div class="chart-panel">
+      <h3>Distribuição de Status por Semana</h3>
+      <canvas id="statusChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 1</span>
+  </div>
+</div>
+
+<!-- ===== PÁGINA 2: HEATMAP ===== -->
+<div class="page-break" id="page2">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo" style="height:30px;background:#fff;padding:2px;border-radius:6px;">
+      <div>
+        <div class="logo-text" style="font-size:8pt;">URE CAIEIRAS — Seduc SP</div>
+      </div>
+    </div>
+    <div class="title-badge" style="font-size:6.5pt;padding:3px 10px;">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="heatmap-section">
+    <h2>Mapa de Status por Escola — 15 Semanas</h2>
+    <div class="legend-row">
+      <span><span class="dot dot-g"></span> Verde — Meta atingida</span>
+      <span><span class="dot dot-y"></span> Amarelo — Atenção</span>
+      <span><span class="dot dot-r"></span> Vermelho — Crítico</span>
+    </div>
+    <table class="heatmap-table" id="heatmapTbl"></table>
+  </div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 2</span>
+  </div>
+</div>
+
+<!-- ===== PÁGINA 3: RANKING + ANÁLISES ===== -->
+<div class="page-break" id="page3">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo" style="height:30px;background:#fff;padding:2px;border-radius:6px;">
+      <div>
+        <div class="logo-text" style="font-size:8pt;">URE CAIEIRAS — Seduc SP</div>
+      </div>
+    </div>
+    <div class="title-badge" style="font-size:6.5pt;padding:3px 10px;">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="ranking-section">
+    <h2>Ranking das Escolas — % Médio de Alunos Ativos</h2>
+    <table class="ranking-table" id="rankTbl"></table>
+  </div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 3</span>
+  </div>
+</div>
+
+<!-- ===== PÁGINA 4: ANÁLISES ===== -->
+<div class="page-break" id="page4">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo" style="height:30px;background:#fff;padding:2px;border-radius:6px;">
+      <div>
+        <div class="logo-text" style="font-size:8pt;">URE CAIEIRAS — Seduc SP</div>
+      </div>
+    </div>
+    <div class="title-badge" style="font-size:6.5pt;padding:3px 10px;">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="analysis-row" id="analysisRow1"></div>
+  <div class="analysis-row" id="analysisRow2"></div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 4</span>
+  </div>
+</div>
+
+<!-- ===== PÁGINA 5-6: DADOS COMPLETOS ===== -->
+<div class="page-break" id="page5">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo" style="height:30px;background:#fff;padding:2px;border-radius:6px;">
+      <div>
+        <div class="logo-text" style="font-size:8pt;">URE CAIEIRAS — Seduc SP</div>
+      </div>
+    </div>
+    <div class="title-badge" style="font-size:6.5pt;padding:3px 10px;">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="full-section">
+    <h2>Dados Completos — Todas as Escolas (1ª metade: escolas 1–30)</h2>
+    <table class="full-table" id="fullTbl1"></table>
+  </div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 5</span>
+  </div>
+</div>
+
+<div class="page-break" id="page6">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo" style="height:30px;background:#fff;padding:2px;border-radius:6px;">
+      <div>
+        <div class="logo-text" style="font-size:8pt;">URE CAIEIRAS — Seduc SP</div>
+      </div>
+    </div>
+    <div class="title-badge" style="font-size:6.5pt;padding:3px 10px;">RELATÓRIO DE MONITORAMENTO</div>
+  </div>
+
+  <div class="full-section">
+    <h2>Dados Completos — Todas as Escolas (2ª metade: escolas 31–57)</h2>
+    <table class="full-table" id="fullTbl2"></table>
+  </div>
+
+  <div class="print-footer">
+    <span>URE CAIEIRAS — Seduc SP · Tutoria</span>
+    <span>Aulas de Tutoria 2026 — Página 6</span>
+  </div>
+</div>
+
+<script>
+// ============ DATA ============
+const rawData = [
+  ["ADAIL JARBAS DUCLOS",13,83,[124,103.33,"G"],[81,92.05,"G"],[49,55.68,"Y"],[8,6.67,"R"],[71,80.68,"Y"],[57,64.77,"G"],[89,76,86.36,"G"],[85,73,82.95,"G"],[83,74,89.16,"G"],[84,77,92.77,"G"],[85,83,100,"G"],[85,77,92.80,"G"],[87,82,98.80,"G"],[83,80,96.40,"G"],[81,81,97.60,"G"]],
+  ["AFONSO MORENO",26,158,[116,70.73,"G"],[126,76.83,"G"],[36,21.95,"R"],[91,55.49,"Y"],[130,79.27,"G"],[121,73.78,"G"],[161,118,71.95,"G"],[159,82,50.00,"Y"],[162,144,91.14,"G"],[167,143,87.20,"G"],[173,147,92.50,"G"],[154,122,76.70,"G"],[151,123,77.40,"G"],[156,130,82.30,"G"],[154,111,70.30,"G"]],
+  ["ALBERTO GRAF CAPITAO",13,114,[44,37.29,"R"],[26,21.67,"R"],[17,14.17,"R"],[11,9.32,"R"],[74,61.67,"G"],[5,4.17,"R"],[75,16,13.56,"R"],[116,59,50.00,"Y"],[116,50,43.86,"Y"],[85,31,26.50,"R"],[106,62,53.00,"Y"],[43,7,6.00,"R"],[146,45,38.50,"R"],[13,4,3.50,"R"],[110,61,53.50,"Y"]],
+  ["ALFRIED THEODOR WEISZFLOG",13,109,[102,91.89,"G"],[85,77.98,"G"],[78,71.56,"G"],[56,50.45,"Y"],[94,86.24,"G"],[78,71.56,"G"],[109,81,74.31,"G"],[109,93,85.32,"G"],[109,94,86.24,"G"],[109,92,84.40,"G"],[109,93,85.30,"G"],[109,83,76.10,"G"],[109,77,70.60,"G"],[110,62,56.90,"Y"],[111,85,78.00,"G"]],
+  ["APARECIDO ROBERTO TONELLOTTI",26,191,[149,74.50,"G"],[164,81.59,"G"],[128,63.68,"G"],[17,8.50,"R"],[163,81.09,"G"],[81,40.30,"Y"],[294,147,72.77,"G"],[191,58,28.71,"R"],[225,165,86.39,"G"],[201,136,68.69,"G"],[192,162,83.10,"G"],[181,124,64.20,"G"],[200,96,49.70,"Y"],[185,24,12.60,"R"],[177,128,67.00,"G"]],
+  ["ARMANDO SESTINI",13,111,[175,153.51,"G"],[0,0.00,"R"],[87,75.65,"G"],[35,30.70,"R"],[94,81.74,"G"],[66,57.39,"Y"],[113,93,80.87,"G"],[110,92,80.00,"G"],[109,101,90.99,"G"],[109,96,84.96,"G"],[109,102,90.30,"G"],[108,95,84.10,"G"],[106,96,85.00,"G"],[112,95,85.60,"G"],[111,95,85.60,"G"]],
+  ["ARTHUR WEINGRILL",13,101,[99,91.67,"G"],[140,130.84,"G"],[93,86.92,"G"],[89,82.41,"G"],[96,89.72,"G"],[87,81.31,"G"],[105,87,81.31,"G"],[104,79,73.83,"G"],[101,89,88.12,"G"],[102,79,78.22,"G"],[101,85,84.20,"G"],[100,79,78.20,"G"],[98,83,82.20,"G"],[98,71,70.30,"G"],[100,73,72.30,"G"]],
+  ["AZEVEDO SOARES",13,80,[72,90.00,"G"],[1,1.25,"R"],[26,32.50,"R"],[18,22.50,"R"],[62,77.50,"G"],[60,75.00,"G"],[46,44,55.00,"Y"],[22,14,17.50,"R"],[77,76,95.00,"G"],[79,77,100.00,"G"],[77,73,91.30,"G"],[77,75,93.80,"G"],[77,76,95.00,"G"],[85,82,102.50,"G"],[80,80,100.00,"G"]],
+  ["BAIRRO DO ITAIM",13,79,[74,83.15,"G"],[18,20.22,"R"],[39,43.82,"Y"],[33,37.08,"R"],[154,173.03,"G"],[78,87.64,"G"],[83,52,62.65,"Y"],[83,18,21.69,"R"],[82,82,103.80,"G"],[80,73,91.25,"G"],[79,60,75.90,"G"],[79,54,68.40,"G"],[79,56,70.90,"G"],[79,69,87.30,"G"],[79,59,74.70,"G"]],
+  ["BAIRRO JUNDIAIZINHO",13,84,[0,0.00,"R"],[0,0.00,"R"],[0,0.00,"R"],[30,214.29,"G"],[7,7.95,"Y"],[4,4.55,"R"],[123,44,51.16,"Y"],[45,14,16.28,"R"],[123,78,92.86,"G"],[107,21,24.71,"R"],[85,48,56.50,"Y"],[84,34,40.00,"R"],[84,59,69.40,"G"],[41,28,33.30,"R"],[113,50,59.50,"Y"]],
+  ["BELEM DA SERRA",13,94,[100,97.09,"G"],[50,49.02,"Y"],[87,85.29,"G"],[100,97.09,"G"],[100,98.04,"G"],[100,98.04,"G"],[105,105,102.94,"G"],[103,101,99.02,"G"],[103,99,105.32,"G"],[106,89,94.68,"G"],[89,84,89.40,"G"],[98,92,97.90,"G"],[97,91,96.80,"G"],[94,91,96.80,"G"],[94,84,89.40,"G"]],
+  ["BENEDITO APARECIDO TAVARES",13,83,[77,88.51,"G"],[61,72.62,"G"],[60,71.43,"G"],[36,41.38,"Y"],[69,82.14,"G"],[56,66.67,"G"],[82,51,60.71,"G"],[89,75,89.29,"G"],[85,66,79.52,"G"],[81,55,66.27,"G"],[71,61,74.40,"G"],[94,67,79.80,"G"],[81,60,71.40,"G"],[83,58,69.90,"G"],[83,72,86.70,"G"]],
+  ["BUENO DE AZEVEDO FILHO",13,104,[154,165.59,"G"],[140,155.56,"G"],[71,78.89,"G"],[70,75.27,"G"],[58,64.44,"G"],[75,83.33,"G"],[92,63,70.00,"G"],[92,58,64.44,"G"],[94,64,61.54,"G"],[111,77,75.49,"G"],[109,79,74.50,"G"],[106,81,77.90,"G"],[103,69,66.30,"G"],[102,89,85.60,"G"],[104,76,73.10,"G"]],
+  ["CARLOS AUGUSTO DE PADUA FLEURY",13,79,[51,63.75,"G"],[38,47.50,"Y"],[29,36.25,"R"],[12,15.00,"R"],[49,61.25,"G"],[60,75.00,"G"],[80,70,87.50,"G"],[80,72,90.00,"G"],[80,67,84.81,"G"],[79,54,67.50,"G"],[79,60,74.10,"G"],[81,55,67.90,"G"],[79,63,77.80,"G"],[73,48,60.80,"G"],[75,57,72.20,"G"]],
+  ["CELESTINA VALENTE LENGENFELDER",13,120,[82,69.49,"G"],[95,79.17,"G"],[98,81.67,"G"],[100,84.75,"G"],[204,170.00,"G"],[104,86.67,"G"],[119,90,75.00,"G"],[122,97,80.83,"G"],[126,119,99.17,"G"],[126,106,88.33,"G"],[126,110,93.20,"G"],[123,99,83.90,"G"],[125,94,79.70,"G"],[119,93,77.50,"G"],[118,107,89.20,"G"]],
+  ["CHACARA CAMPONESA JD VASSOURAS",26,173,[43,24.57,"R"],[61,34.46,"R"],[63,35.59,"R"],[3,1.71,"R"],[78,44.07,"Y"],[82,46.33,"Y"],[88,86,48.59,"Y"],[89,66,37.29,"R"],[257,236,136.42,"G"],[172,159,91.38,"G"],[170,155,90.10,"G"],[169,124,72.10,"G"],[169,130,75.60,"G"],[178,89,51.40,"Y"],[177,125,72.30,"G"]],
+  ["DOMINGOS CAMBIAGHI",13,100,[2,1.94,"R"],[0,0.00,"R"],[3,2.88,"R"],[null,null,"X"],[190,182.69,"G"],[55,52.88,"Y"],[105,56,53.85,"Y"],[84,37,35.58,"R"],[104,78,78.00,"G"],[95,66,63.46,"G"],[77,52,50.00,"Y"],[100,61,58.70,"Y"],[105,69,66.30,"G"],[96,56,56.00,"Y"],[100,18,18.00,"R"]],
+  ["DR. MARIO TOLEDO DE MORAES",26,185,[347,179.79,"G"],[153,81.38,"G"],[113,60.11,"Y"],[62,32.12,"R"],[168,89.36,"G"],[145,77.13,"G"],[189,148,78.72,"G"],[188,128,68.09,"G"],[188,169,91.35,"G"],[185,158,85.41,"G"],[182,137,74.10,"G"],[169,142,76.80,"G"],[181,153,82.70,"G"],[185,161,87.00,"G"],[185,134,72.40,"G"]],
+  ["DR. NELSON MANZANARES",13,114,[247,207.56,"G"],[94,80.34,"G"],[90,76.92,"G"],[61,51.26,"Y"],[58,49.57,"Y"],[71,60.68,"G"],[114,74,63.25,"G"],[115,23,19.66,"R"],[1,0,0.00,"R"],[95,30,25.64,"R"],[0,0,0.00,"R"],[94,82,71.90,"G"],[86,61,53.50,"Y"],[83,62,54.40,"Y"],[108,74,64.90,"G"]],
+  ["ELVIRA PARADA MANGA",13,90,[62,62.00,"G"],[28,28.57,"R"],[19,19.39,"R"],[null,null,"X"],[49,50.00,"Y"],[38,38.78,"R"],[95,78,79.59,"G"],[96,69,70.41,"G"],[96,85,94.44,"G"],[96,89,101.14,"G"],[88,71,80.70,"G"],[88,63,71.60,"G"],[78,67,76.10,"G"],[90,80,88.90,"G"],[90,81,90.00,"G"]],
+  ["FRANCISCO GONCALVES VIEIRA",13,85,[48,57.83,"Y"],[0,0.00,"R"],[31,37.35,"R"],[56,67.47,"G"],[44,53.01,"Y"],[59,71.08,"G"],[82,54,65.06,"G"],[81,52,62.65,"G"],[82,29,34.12,"R"],[81,13,15.66,"R"],[85,65,74.70,"G"],[90,76,87.40,"G"],[90,76,87.40,"G"],[85,54,63.50,"G"],[85,77,90.60,"G"]],
+  ["HERMELINA DE ALB. PASSARELLA",13,107,[50,90.91,"G"],[1,0.92,"R"],[99,90.83,"G"],[48,87.27,"G"],[219,200.92,"G"],[31,28.44,"R"],[107,93,86.11,"G"],[105,80,74.07,"G"],[103,88,82.24,"G"],[103,89,83.18,"G"],[103,90,84.10,"G"],[103,95,88.80,"G"],[103,91,85.00,"G"],[107,92,86.00,"G"],[107,92,86.00,"G"]],
+  ["IRACI SARTORI VIEIRA DA SILVA",13,91,[220,234.04,"G"],[208,223.66,"G"],[81,87.10,"G"],[53,56.38,"Y"],[69,74.19,"G"],[59,63.44,"G"],[72,10,10.75,"R"],[142,123,132.26,"G"],[73,68,74.73,"G"],[71,68,74.73,"G"],[71,71,78.00,"G"],[74,71,78.00,"G"],[74,70,76.90,"G"],[70,67,73.60,"G"],[70,69,75.80,"G"]],
+  ["ISAURA DE MIRANDA BOTTO",13,79,[122,152.50,"G"],[0,0.00,"R"],[28,35.00,"R"],[19,23.75,"R"],[31,38.75,"R"],[14,17.50,"R"],[76,22,27.50,"R"],[75,15,18.75,"R"],[2,0,0.00,"R"],[65,20,25.00,"R"],[112,49,61.30,"G"],[1,0,0.00,"R"],[64,24,30.40,"R"],[30,6,7.60,"R"],[205,143,181.00,"G"]],
+  ["ISAURA VALENTINI HANSER",13,85,[55,69.62,"G"],[28,32.56,"R"],[4,4.65,"R"],[null,null,"X"],[67,77.91,"G"],[0,0.00,"R"],[84,32,37.21,"R"],[159,53,61.63,"G"],[156,53,62.35,"G"],[82,43,52.44,"Y"],[85,52,61.20,"G"],[85,10,11.80,"R"],[85,57,67.10,"G"],[85,50,58.80,"Y"],[85,19,22.40,"R"]],
+  ["IVONE DOS ANJOS DA SILVA CAMPOS",13,93,[136,137.37,"G"],[36,37.89,"R"],[49,51.58,"Y"],[64,64.65,"G"],[86,90.53,"G"],[22,23.16,"R"],[92,71,74.74,"G"],[94,76,80.00,"G"],[91,87,93.55,"G"],[92,77,81.05,"G"],[92,74,77.90,"G"],[96,76,80.00,"G"],[94,69,72.60,"G"],[94,80,86.00,"G"],[94,76,81.70,"G"]],
+  ["JARDIM ALEGRIA II",26,208,[147,70.00,"G"],[152,73.08,"G"],[152,73.08,"G"],[66,31.43,"R"],[156,75.00,"G"],[168,80.77,"G"],[198,169,81.25,"G"],[208,115,55.29,"Y"],[210,186,89.42,"G"],[209,130,62.50,"G"],[194,144,69.20,"G"],[152,114,54.80,"Y"],[206,126,60.60,"G"],[209,138,66.30,"G"],[209,162,77.90,"G"]],
+  ["JARDIM DAS ROSAS",26,214,[60,18.75,"R"],[35,11.55,"R"],[90,29.70,"R"],[32,10.00,"R"],[153,50.50,"Y"],[88,29.04,"R"],[115,68,31.34,"R"],[204,125,57.60,"Y"],[218,186,86.92,"G"],[217,128,59.81,"Y"],[218,157,73.40,"G"],[218,125,58.40,"Y"],[217,121,56.50,"Y"],[215,105,49.10,"Y"],[196,121,56.50,"Y"]],
+  ["JARDIM SAO FRANCISCO",13,106,[75,65.22,"G"],[22,19.13,"R"],[56,48.70,"Y"],[44,38.26,"R"],[36,31.30,"R"],[31,26.96,"R"],[55,24,20.87,"R"],[55,53,46.09,"Y"],[55,54,50.94,"Y"],[54,32,28.32,"R"],[52,52,49.10,"Y"],[50,47,44.80,"Y"],[105,98,93.30,"G"],[107,102,96.20,"G"],[106,95,89.60,"G"]],
+  ["JARDIM SILVIA II",26,188,[258,134.38,"G"],[197,103.68,"G"],[151,79.47,"G"],[112,58.33,"Y"],[212,111.58,"G"],[110,57.89,"Y"],[192,123,64.74,"G"],[194,146,76.84,"G"],[201,179,95.21,"G"],[185,140,72.92,"G"],[198,142,74.00,"G"],[188,130,68.40,"G"],[192,106,55.80,"Y"],[180,121,64.40,"G"],[185,137,72.90,"G"]],
+  ["JOCIMARA VIEIRA DA SILVA",26,159,[42,22.95,"R"],[4,2.21,"R"],[65,35.91,"R"],[14,7.65,"R"],[45,24.86,"R"],[61,33.70,"R"],[173,11,6.75,"R"],[90,80,49.08,"Y"],[236,205,128.93,"G"],[154,124,77.02,"G"],[167,136,84.50,"G"],[160,110,68.30,"G"],[160,93,57.80,"Y"],[159,116,73.00,"G"],[159,133,83.60,"G"]],
+  ["JOSE CARLOS DA SILVA JUNIOR",13,110,[2,2.22,"R"],[26,23.64,"R"],[40,36.36,"Y"],[52,57.78,"Y"],[33,30.00,"R"],[1,0.91,"R"],[119,27,24.55,"R"],[131,53,48.18,"Y"],[106,49,44.55,"Y"],[103,26,23.64,"R"],[110,52,47.30,"Y"],[122,48,43.60,"Y"],[107,56,50.90,"Y"],[113,41,37.30,"R"],[114,46,41.80,"Y"]],
+  ["JOSE DE BARROS MARTINS EDITOR",26,185,[144,76.19,"G"],[89,47.09,"Y"],[136,71.96,"G"],[134,70.90,"G"],[154,81.48,"G"],[70,37.04,"R"],[187,150,79.37,"G"],[185,143,75.66,"G"],[187,161,87.03,"G"],[184,161,86.10,"G"],[183,143,76.50,"G"],[183,156,83.40,"G"],[183,157,84.00,"G"],[185,167,90.30,"G"],[185,165,89.20,"G"]],
+  ["JOSE PARADA",13,106,[120,107.14,"G"],[0,0.00,"R"],[7,6.25,"R"],[70,62.50,"G"],[68,60.71,"G"],[69,61.61,"G"],[112,84,75.00,"G"],[0,0,0.00,"R"],[112,86,81.13,"G"],[108,62,58.49,"Y"],[106,78,73.60,"G"],[108,84,79.20,"G"],[109,47,44.30,"Y"],[79,3,2.80,"R"],[91,79,74.50,"G"]],
+  ["JOSE ROBERTO MELCHIOR DR",13,111,[34,30.36,"R"],[22,20.00,"R"],[84,76.36,"G"],[185,165.18,"G"],[81,73.64,"G"],[60,54.55,"Y"],[111,57,51.35,"Y"],[44,27,24.32,"R"],[110,69,62.16,"G"],[112,51,45.95,"Y"],[112,61,55.00,"Y"],[104,52,46.80,"Y"],[104,52,46.80,"Y"],[111,53,47.70,"Y"],[97,42,37.80,"R"]],
+  ["KATIA MARIA TARIFA LEME TONELLI",26,202,[276,129.58,"G"],[83,39.15,"R"],[39,18.40,"R"],[61,28.64,"R"],[150,70.75,"G"],[118,55.66,"Y"],[200,158,74.53,"G"],[182,115,54.25,"Y"],[159,134,66.34,"G"],[195,172,82.69,"G"],[190,165,79.30,"G"],[191,176,84.60,"G"],[166,155,74.50,"G"],[202,152,75.20,"G"],[206,191,94.60,"G"]],
+  ["LENITA CORREA CAMARGO",13,105,[116,104.50,"G"],[106,100.00,"G"],[98,92.45,"G"],[92,82.88,"G"],[94,88.68,"G"],[99,93.40,"G"],[107,95,89.62,"G"],[106,102,96.23,"G"],[109,97,92.38,"G"],[108,81,76.42,"G"],[107,97,92.40,"G"],[105,97,92.40,"G"],[105,87,82.90,"G"],[112,88,83.80,"G"],[110,90,85.70,"G"]],
+  ["LUIZ ALEXANDRE DOS SANTOS VEREADOR",13,57,[194,323.33,"G"],[49,87.50,"G"],[47,83.93,"G"],[55,91.67,"G"],[6,10.71,"R"],[3,5.36,"R"],[6,1,1.75,"R"],[102,75,131.58,"G"],[109,77,135.09,"G"],[119,79,138.60,"G"],[100,74,129.80,"G"],[111,62,108.80,"G"],[115,67,117.50,"G"],[98,48,84.20,"G"],[94,53,93.00,"G"]],
+  ["LYDIA SCALET WALKER",13,99,[37,36.63,"R"],[0,0.00,"R"],[79,78.22,"G"],[41,40.59,"Y"],[180,178.22,"G"],[81,80.20,"G"],[103,63,62.38,"G"],[100,91,90.10,"G"],[103,94,94.95,"G"],[102,80,79.21,"G"],[100,90,90.90,"G"],[102,81,81.80,"G"],[100,76,76.80,"G"],[48,24,24.20,"R"],[99,82,82.80,"G"]],
+  ["MARIA ZEZA GOMES DE OLIVEIRA",13,82,[69,81.18,"G"],[66,79.52,"G"],[68,81.93,"G"],[57,67.06,"G"],[80,96.39,"G"],[58,69.88,"G"],[83,67,84.81,"G"],[83,74,93.67,"G"],[83,74,90.24,"G"],[83,76,91.57,"G"],[83,72,86.70,"G"],[83,71,85.50,"G"],[102,79,95.20,"G"],[84,69,84.10,"G"],[84,78,95.10,"G"]],
+  ["NAIR HANNICKEL ROMARO",13,89,[51,59.30,"Y"],[16,18.60,"R"],[3,3.49,"R"],[44,51.16,"Y"],[97,112.79,"G"],[49,56.98,"Y"],[86,43,50.00,"Y"],[90,56,65.12,"G"],[82,66,74.16,"G"],[85,37,44.58,"Y"],[81,43,51.80,"Y"],[78,7,8.40,"R"],[80,63,75.90,"G"],[89,46,51.70,"Y"],[88,49,55.10,"Y"]],
+  ["NIDE ZAIM CARDOSO",13,118,[108,90.00,"G"],[22,18.33,"R"],[45,37.50,"R"],[2,1.67,"R"],[107,89.17,"G"],[105,87.50,"G"],[114,102,85.00,"G"],[114,97,80.83,"G"],[118,110,93.22,"G"],[110,96,80.00,"G"],[108,92,76.70,"G"],[113,106,89.10,"G"],[115,108,90.80,"G"],[110,95,80.50,"G"],[115,102,86.40,"G"]],
+  ["OZILIDE ALB. PASSARELLA DR",13,108,[102,93.58,"G"],[11,10.38,"R"],[19,17.92,"R"],[16,14.68,"R"],[0,0.00,"R"],[69,65.09,"G"],[106,69,65.09,"G"],[106,73,68.87,"G"],[105,86,79.63,"G"],[105,66,62.86,"G"],[105,63,60.00,"G"],[0,0,0.00,"R"],[105,91,86.70,"G"],[108,49,45.40,"Y"],[108,70,64.80,"G"]],
+  ["PARQUE CENTO E VINTE II",26,200,[151,75.12,"G"],[140,69.65,"G"],[150,74.63,"G"],[85,42.29,"Y"],[193,96.02,"G"],[159,79.10,"G"],[199,151,75.12,"G"],[201,143,71.14,"G"],[200,165,82.50,"G"],[191,160,79.60,"G"],[205,162,79.40,"G"],[202,170,84.20,"G"],[200,160,79.20,"G"],[201,159,79.50,"G"],[202,165,82.50,"G"]],
+  ["PAULO DUARTE",13,120,[110,91.67,"G"],[68,57.63,"Y"],[12,10.17,"R"],[25,20.83,"R"],[106,89.83,"G"],[1,0.85,"R"],[122,113,95.76,"G"],[127,106,89.83,"G"],[128,123,102.50,"G"],[121,116,96.67,"G"],[129,122,101.70,"G"],[129,115,95.80,"G"],[128,123,102.50,"G"],[122,120,100.00,"G"],[122,116,96.70,"G"]],
+  ["PEDRO GALRAO DO NASCIMENTO",13,94,[95,97.94,"G"],[92,98.92,"G"],[93,100.00,"G"],[45,46.39,"Y"],[73,78.49,"G"],[70,75.27,"G"],[93,61,67.78,"G"],[91,79,87.78,"G"],[109,100,106.38,"G"],[95,82,88.17,"G"],[92,76,80.90,"G"],[97,64,68.80,"G"],[96,76,81.70,"G"],[94,85,90.40,"G"],[94,87,92.60,"G"]],
+  ["PEDRO LELIS DE SOUZA PREFEITO",13,92,[38,38.00,"R"],[29,29.29,"R"],[41,41.41,"Y"],[32,32.00,"R"],[26,26.26,"R"],[16,16.16,"R"],[72,30,30.61,"R"],[60,15,15.31,"R"],[88,85,92.39,"G"],[73,27,29.35,"R"],[88,52,56.50,"Y"],[67,14,15.20,"R"],[56,37,40.20,"Y"],[71,39,42.40,"Y"],[92,44,47.80,"Y"]],
+  ["PEDRO PAULO DE AGUIAR",26,205,[94,45.41,"Y"],[22,10.53,"R"],[6,2.87,"R"],[97,46.86,"Y"],[56,26.79,"R"],[124,59.33,"Y"],[91,36,17.56,"R"],[137,34,16.59,"R"],[213,165,80.49,"G"],[201,143,68.10,"G"],[204,144,70.20,"G"],[198,144,70.20,"G"],[204,116,56.60,"Y"],[203,128,62.40,"G"],[201,138,67.30,"G"]],
+  ["PIETRO PETRI",13,92,[81,85.26,"G"],[80,80.00,"G"],[69,69.00,"G"],[23,24.21,"R"],[94,94.00,"G"],[100,100.00,"G"],[99,96,100.00,"G"],[96,92,95.83,"G"],[99,88,95.65,"G"],[96,79,82.29,"G"],[96,68,72.30,"G"],[96,70,74.50,"G"],[97,88,93.60,"G"],[94,84,91.30,"G"],[92,74,80.40,"G"]],
+  ["RITUCO MITANI",13,100,[102,92.73,"G"],[14,12.73,"R"],[74,67.27,"G"],[null,null,"X"],[18,16.36,"R"],[45,40.91,"Y"],[106,58,52.73,"Y"],[106,78,70.91,"G"],[102,98,98.00,"G"],[102,60,57.69,"Y"],[100,93,89.40,"G"],[100,98,94.20,"G"],[96,80,76.90,"G"],[100,38,38.00,"R"],[100,68,68.00,"G"]],
+  ["ROGERIO LEVORIN",26,211,[103,47.25,"Y"],[76,35.68,"R"],[97,45.54,"Y"],[87,39.91,"R"],[210,98.59,"G"],[31,14.55,"R"],[211,158,70.85,"G"],[534,275,123.32,"G"],[239,141,66.82,"G"],[226,187,85.39,"G"],[216,188,87.90,"G"],[225,168,79.20,"G"],[210,158,74.50,"G"],[210,155,73.50,"G"],[215,156,73.90,"G"]],
+  ["ULYSSES SANCHES RAMIRES",13,108,[67,60.36,"G"],[10,9.17,"R"],[5,4.59,"R"],[5,4.50,"R"],[0,0.00,"R"],[65,59.63,"Y"],[106,78,71.56,"G"],[105,71,65.14,"G"],[102,68,62.96,"G"],[104,77,71.30,"G"],[105,80,74.10,"G"],[102,70,64.80,"G"],[100,66,61.10,"G"],[99,46,42.60,"Y"],[106,77,71.30,"G"]],
+  ["VINCENZO LOBASSI",13,98,[49,53.26,"Y"],[6,6.52,"R"],[3,3.26,"R"],[10,10.87,"R"],[10,10.87,"R"],[26,28.26,"R"],[99,21,21.43,"R"],[53,48,48.98,"Y"],[54,45,45.92,"Y"],[54,39,39.80,"R"],[53,40,40.80,"Y"],[54,37,37.80,"R"],[53,51,52.00,"Y"],[54,49,50.00,"Y"],[55,48,49.00,"Y"]],
+  ["ZILTON BICUDO",26,157,[196,110.73,"G"],[144,85.71,"G"],[130,77.38,"G"],[86,48.59,"Y"],[142,84.52,"G"],[198,117.86,"G"],[166,136,83.44,"G"],[163,123,75.46,"G"],[165,118,75.16,"G"],[162,128,79.50,"G"],[160,133,83.60,"G"],[158,127,80.40,"G"],[157,117,74.10,"G"],[158,81,51.60,"Y"],[158,110,70.10,"G"]]
+];
+
+const weekLabels = ["01-16/03","02-23/03","03-30/03","04-06/04","05-13/04","06-20/04","07-27/04","08-04/05","09-11/05","10-18/05","11-25/05","12-01/06","13-08/06","14-15/06","15-22/06"];
+
+const schools = rawData.map(row => {
+  const name = row[0], classes = row[1], enrolled = row[2];
+  const weeks = [];
+  for (let i = 0; i < 15; i++) {
+    const d = row[3 + i];
+    if (i < 6) weeks.push({ pct: d[0] === null ? null : d[1], status: d[2] });
+    else weeks.push({ pct: d[1] === null ? null : d[2], status: d[3] });
+  }
+  const validWeeks = weeks.filter(w => w.pct !== null);
+  const avgPct = validWeeks.length > 0 ? validWeeks.reduce((s,w) => s + w.pct, 0) / validWeeks.length : 0;
+  const verdeCount = weeks.filter(w => w.status === "G").length;
+  const vermelhoCount = weeks.filter(w => w.status === "R").length;
+  const first7 = weeks.slice(0,7).filter(w=>w.pct!==null);
+  const last7 = weeks.slice(7).filter(w=>w.pct!==null);
+  const avgFirst = first7.length > 0 ? first7.reduce((s,w)=>s+w.pct,0)/first7.length : 0;
+  const avgLast = last7.length > 0 ? last7.reduce((s,w)=>s+w.pct,0)/last7.length : 0;
+  return { name, classes, enrolled, weeks, avgPct, verdeCount, vermelhoCount, trend: avgLast - avgFirst };
+});
+
+// ===== SUMMARY CARDS =====
+const totalSchools = schools.length;
+const totalStudents = schools.reduce((s,sc) => s + sc.enrolled, 0);
+const overallAvg = (schools.reduce((s,sc) => s + sc.avgPct, 0) / totalSchools).toFixed(1);
+const totalGreen = schools.reduce((s,sc) => s + sc.verdeCount, 0);
+const totalAll = schools.reduce((s,sc) => s + sc.verdeCount + sc.vermelhoCount + sc.weeks.filter(w=>w.status==="Y").length, 0);
+const greenPct = ((totalGreen / totalAll) * 100).toFixed(0);
+
+document.getElementById('sumCards').innerHTML = `
+  <div class="sum-card"><div class="s-label">Escolas</div><div class="s-value">${totalSchools}</div><div class="s-detail">13 e 26 aulas</div></div>
+  <div class="sum-card"><div class="s-label">Alunos</div><div class="s-value">${totalStudents.toLocaleString('pt-BR')}</div><div class="s-detail">enturmados</div></div>
+  <div class="sum-card"><div class="s-label">% Médio Ativos</div><div class="s-value">${overallAvg}%</div><div class="s-detail">15 semanas</div></div>
+  <div class="sum-card"><div class="s-label">Meta Atingida</div><div class="s-value">${greenPct}%</div><div class="s-detail">${totalGreen}/${totalAll}</div></div>
+  <div class="sum-card"><div class="s-label">Semanas</div><div class="s-value">15</div><div class="s-detail">Mar–Jun 2026</div></div>
+`;
+
+// ===== CHARTS =====
+const weeklyAvgPct = [], wG = [], wY = [], wR = [];
+for (let w = 0; w < 15; w++) {
+  const valid = schools.filter(sc => sc.weeks[w].pct !== null);
+  weeklyAvgPct.push(+(valid.length > 0 ? valid.reduce((s,sc) => s + sc.weeks[w].pct, 0) / valid.length : 0).toFixed(1));
+  wG.push(schools.filter(sc => sc.weeks[w].status === "G").length);
+  wY.push(schools.filter(sc => sc.weeks[w].status === "Y").length);
+  wR.push(schools.filter(sc => sc.weeks[w].status === "R").length);
+}
+
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: { labels: weekLabels, datasets: [{ data: weeklyAvgPct, borderColor: '#0a2f6c', backgroundColor: 'rgba(10,47,108,0.06)', fill: true, tension: 0.35, pointRadius: 3, borderWidth: 2 }] },
+  options: { responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#64748b', font: { size: 7 }, callback: v => v + '%' }, grid: { color: '#f1f5f9' } }, x: { ticks: { color: '#64748b', font: { size: 6 }, maxRotation: 45 }, grid: { display: false } } }, animation: { duration: 0 } }
+});
+
+new Chart(document.getElementById('statusChart'), {
+  type: 'bar',
+  data: { labels: weekLabels, datasets: [
+    { label: 'Verde', data: wG, backgroundColor: '#16a34a', borderRadius: 4 },
+    { label: 'Amarelo', data: wY, backgroundColor: '#f59e0b', borderRadius: 4 },
+    { label: 'Vermelho', data: wR, backgroundColor: '#d32f2f', borderRadius: 4 }
+  ]},
+  options: { responsive: true, plugins: { legend: { labels: { color: '#475569', font: { size: 7 }, usePointStyle: true, pointStyle: 'rectRounded' } }, tooltip: { enabled: false } }, scales: { y: { stacked: true, ticks: { color: '#64748b', font: { size: 7 } }, grid: { color: '#f1f5f9' } }, x: { stacked: true, ticks: { color: '#64748b', font: { size: 6 }, maxRotation: 45 }, grid: { display: false } } }, animation: { duration: 0 } }
+});
+
+// ===== HEATMAP TABLE =====
+(function() {
+  const tbl = document.getElementById('heatmapTbl');
+  let html = '<thead><tr><th>Escola</th>';
+  weekLabels.forEach(w => html += `<th>${w}</th>`);
+  html += '</tr></thead><tbody>';
+  schools.forEach(sc => {
+    html += `<tr><td>${sc.name}</td>`;
+    sc.weeks.forEach(w => {
+      const cls = w.status === 'G' ? 'hm-g' : w.status === 'Y' ? 'hm-y' : w.status === 'R' ? 'hm-r' : 'hm-x';
+      const val = w.pct !== null ? w.pct.toFixed(0) + '%' : '—';
+      html += `<td class="${cls}">${val}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+})();
+
+// ===== RANKING TABLE =====
+(function() {
+  const sorted = [...schools].sort((a,b) => b.avgPct - a.avgPct);
+  const tbl = document.getElementById('rankTbl');
+  let html = '<thead><tr><th>#</th><th>Escola</th><th>Turm.</th><th>Alunos</th><th>% Médio Ativos</th><th>Verde</th><th>Verm.</th><th>Tend.</th></tr></thead><tbody>';
+  sorted.forEach((sc, i) => {
+    const barW = Math.min(sc.avgPct, 100);
+    const barColor = sc.avgPct >= 70 ? '#16a34a' : sc.avgPct >= 50 ? '#f59e0b' : '#d32f2f';
+    const trendIcon = sc.trend > 5 ? '↑' : sc.trend < -5 ? '↓' : '→';
+    const trendColor = sc.trend > 5 ? '#16a34a' : sc.trend < -5 ? '#d32f2f' : '#94a3b8';
+    html += `<tr>
+      <td class="rk">${i+1}</td>
+      <td class="nm">${sc.name}</td>
+      <td class="ct">${sc.classes}</td>
+      <td class="ct">${sc.enrolled}</td>
+      <td><span class="pct-mini-bar" style="width:${barW*0.6}px;background:${barColor}"></span>${sc.avgPct.toFixed(1)}%</td>
+      <td class="ct"><span class="sdot sd-g"></span>${sc.verdeCount}</td>
+      <td class="ct"><span class="sdot sd-r"></span>${sc.vermelhoCount}</td>
+      <td style="color:${trendColor};font-weight:700;font-size:6.5pt">${trendIcon}${sc.trend > 0 ? '+' : ''}${sc.trend.toFixed(0)}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+})();
+
+// ===== ANALYSIS CARDS =====
+function analysisHTML(title, items) {
+  let html = `<div class="analysis-panel"><h3>${title}</h3><table>`;
+  items.forEach(([name, val]) => {
+    html += `<tr><td>${name}</td><td>${val}</td></tr>`;
+  });
+  html += '</table></div>';
+  return html;
+}
+
+const sorted = [...schools].sort((a,b) => b.avgPct - a.avgPct);
+document.getElementById('analysisRow1').innerHTML =
+  analysisHTML('Top 10 — Maior % Médio', sorted.slice(0,10).map(sc => [sc.name, sc.avgPct.toFixed(1)+'%'])) +
+  analysisHTML('Top 10 — Menor % Médio', sorted.slice(-10).reverse().map(sc => [sc.name, sc.avgPct.toFixed(1)+'%']));
+
+const mostImproved = [...schools].sort((a,b) => b.trend - a.trend).slice(0,10);
+const mostRed = [...schools].sort((a,b) => b.vermelhoCount - a.vermelhoCount).slice(0,10);
+document.getElementById('analysisRow2').innerHTML =
+  analysisHTML('Top 10 — Maior Melhoria', mostImproved.map(sc => [sc.name, (sc.trend>0?'+':'')+sc.trend.toFixed(1)+' p.p.'])) +
+  analysisHTML('Top 10 — Mais Semanas em Vermelho', mostRed.map(sc => [sc.name, sc.vermelhoCount+' sem.']));
+
+// ===== FULL DATA TABLES (split in two halves) =====
+function renderFullTable(tableId, data) {
+  const tbl = document.getElementById(tableId);
+  let html = '<thead><tr><th>Escola</th><th>T</th><th>A</th>';
+  weekLabels.forEach(w => html += `<th>${w}</th>`);
+  html += '</tr></thead><tbody>';
+  data.forEach(sc => {
+    html += `<tr><td>${sc.name}</td><td class="ct">${sc.classes}</td><td class="ct">${sc.enrolled}</td>`;
+    sc.weeks.forEach(w => {
+      if (w.pct === null) html += '<td style="color:#94a3b8">—</td>';
+      else {
+        const cls = w.status === 'G' ? 'fv' : w.status === 'Y' ? 'fa' : 'fr';
+        html += `<td class="${cls}">${w.pct.toFixed(0)}%</td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+}
+
+const half = Math.ceil(schools.length / 2);
+renderFullTable('fullTbl1', schools.slice(0, half));
+renderFullTable('fullTbl2', schools.slice(half));
+</script>
+</body>
+</html>
